@@ -61,8 +61,20 @@ def backtest(df, signals):
     strategy_returns = positions.shift(1) * returns
     cumulative_returns = (1 + strategy_returns).cumprod()
 
-    return cumulative_returns
+    return cumulative_returns, strategy_returns
 
+def calculate_sharpe_ratio(returns, risk_free_rate=0, periods_per_year=252):
+    excess_returns = returns - risk_free_rate
+    sharpe_ratio = (excess_returns.mean() / excess_returns.std()) * np.sqrt(periods_per_year)
+
+    return sharpe_ratio
+
+signals = generate_signals(closing_prices, short_window, long_window)
+
+cumulative_returns, strategy_returns = backtest(df, signals)
+
+sharpe = calculate_sharpe_ratio(strategy_returns)
+print(f'Sharpe Ratio: {sharpe:.4f} ')
 
 signals = generate_signals(closing_prices, short_window, long_window)
 print(signals)
@@ -90,7 +102,7 @@ plt.ylabel('Price')
 plt.grid(True)
 plt.show()
 
-cumulative_returns = backtest(df, signals)
+
 sharpe_ratio = (cumulative_returns.pct_change().mean() / cumulative_returns.pct_change().std()) * np.sqrt(252)
 max_drawdown = (cumulative_returns / cumulative_returns.cummax() - 1).min()
 
