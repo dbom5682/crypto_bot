@@ -7,4 +7,5 @@ exchange = ccxt.kucoin({
 })
 
 ticker = exchange.fetch_ticker('BTC/USDT')
-print(ticker)
+current_price = ticker['last']
+print('Current BTC/USDT price:', current_price)
