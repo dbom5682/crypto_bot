@@ -26,7 +26,9 @@ signals = pd.DataFrame(index=closing_prices.index)
 signals['short_ma'] = short_ma
 signals['long_ma'] = long_ma
 signals['signal'] = 0.0
-signals['signal'][short_window:] = np.where(signals['short_ma'][short_window:] > signals['long_ma'][short_window:], 1.0, 0.0)
+signals.loc[signals.index[short_window:], 'signal'] = np.where(
+    signals['short_ma'][short_window:] > signals['long_ma'][short_window:], 1.0, 0.0
+)
 signals['positions'] = signals['signal'].diff()
 
 window = 20
